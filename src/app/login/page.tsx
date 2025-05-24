@@ -23,7 +23,8 @@ export default function Login() {
         router.push("/tasks");
       }
     } catch (error) {
-      setError("Check your Credentials");
+      console.error(error);
+      setError("email or password not correct.");
     }
   };
   return (

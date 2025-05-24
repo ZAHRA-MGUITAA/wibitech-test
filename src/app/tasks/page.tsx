@@ -8,29 +8,30 @@ import TaskModal from "./components/TaskModal";
 import useGetTasks from "./hooks/useGetTasks";
 import useCreateTask from "./hooks/useCreateTask";
 import { Task as TaskProps } from "./types";
+import { redirect } from "next/navigation";
 
 export default function Tasks() {
   const [isOpen, setIsOpen] = useState(false);
   const { getTasks, tasks } = useGetTasks();
   const { addTask } = useCreateTask();
-
   const session = useSession();
+  const isAuthenticated = session.status === "authenticated";
   const isAdmin = useMemo(() => {
-    return session.data?.user?.roles === "admin";
+    return session.data?.user?.role === "admin";
   }, [session]);
 
   useEffect(() => {
     getTasks();
   }, []);
 
-  const addNewTask = async (e: any) => {
+  const addNewTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     await addTask({
-      title: formData.get("title"),
-      description: formData.get("description"),
+      title: formData.get("title") as string,
+      description: formData.get("description") as string,
       status: "in_progress",
-      assignedTo: formData.get("assign_to"),
+      assignedTo: formData.get("assign_to") as string,
     });
     setIsOpen(false);
   };
@@ -39,6 +40,8 @@ export default function Tasks() {
     setIsOpen(false);
   };
 
+  if (session.status === "loading") return null;
+  if (!isAuthenticated) redirect("/login");
   return (
     <div className="pt-[50px] px-[100px] flex flex-col gap-[50px]">
       <div className="w-full flex justify-between">

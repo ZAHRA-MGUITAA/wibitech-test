@@ -4,9 +4,9 @@ declare module "next-auth" {
   interface User {
     username?: string;
     role?: "admin" | "user";
-    integrations?: any;
     firstName?: string;
     token?: string;
+    accessToken?: string;
   }
 
   interface Session {
@@ -17,8 +17,7 @@ declare module "next-auth" {
 declare module "@auth/core/jwt" {
   interface JWT {
     username?: string;
-    roles?: "admin" | "user";
-    integrations?: any;
+    role?: "admin" | "user";
     firstName?: string;
     accessToken?: string;
   }

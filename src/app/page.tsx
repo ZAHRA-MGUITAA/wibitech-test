@@ -1,8 +1,15 @@
-import { SessionProvider } from "next-auth/react";
-import Image from "next/image";
-import Login from "./login/page";
-import Content from "@/components/design-system/templates/Content";
+"use client";
+import { useSession } from "next-auth/react";
+
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return <></>;
+  const session = useSession();
+  const isAuthenticated = session.status === "authenticated";
+
+  if (isAuthenticated) {
+    redirect("/tasks");
+  } else {
+    redirect("/login");
+  }
 }

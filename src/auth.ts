@@ -1,7 +1,7 @@
 import axios from "axios";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { headers } from "next/headers";
+import { handleApiError } from "./app/api/apiError/apiResponse";
 
 export const {
   handlers: { GET, POST },
@@ -35,8 +35,8 @@ export const {
           } else {
             throw new Error("Email or Password is not correct");
           }
-        } catch (error: any) {
-          throw new Error(error);
+        } catch (error: unknown) {
+          handleApiError(error);
         }
       },
     }),
@@ -45,14 +45,12 @@ export const {
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, trigger, session, user }) {
-      // if (trigger === "update") token.username = session.user.username;
-
+    jwt({ token, user }) {
       if (user) {
         token.username = user.username;
-        token.token = user.token;
+        token.accessToken = user.token;
         token.firstName = user.firstName;
-        token.roles = user.role;
+        token.role = user.role;
       }
       return token;
     },
@@ -63,10 +61,10 @@ export const {
         user: {
           ...session.user,
           username: token.username,
-          roles: token.roles,
+          role: token.role,
           integrations: token.integrations,
           firstName: token.firstName,
-          accessToken: token.token,
+          accessToken: token.accessToken,
         },
       };
     },

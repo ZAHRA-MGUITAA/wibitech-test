@@ -6,7 +6,7 @@ export type User = {
 };
 
 export type Task = {
-  id: number;
+  id?: number;
   title: string;
   description?: string;
   assignedTo: string;

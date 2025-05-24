@@ -1,6 +1,7 @@
 "use server";
 
 import { signIn, signOut } from "@/auth";
+import { handleApiError } from "../api/apiError/apiResponse";
 
 export async function credentialsSignin(formData: FormData) {
   try {
@@ -14,7 +15,7 @@ export async function credentialsSignin(formData: FormData) {
     }
     return response;
   } catch (error) {
-    return { success: false, error: "email or password not correct." };
+    return handleApiError(error);
   }
 }
 

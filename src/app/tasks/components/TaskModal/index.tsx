@@ -22,7 +22,7 @@ export default function TaskModal({
   const [assignedTo, setAssignedTo] = useState(task?.assignedTo);
   const session = useSession();
   const isAdmin = useMemo(() => {
-    return session.data?.user?.roles === "admin";
+    return session.data?.user?.role === "admin";
   }, [session]);
 
   useEffect(() => {

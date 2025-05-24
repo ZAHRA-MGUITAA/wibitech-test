@@ -16,7 +16,7 @@ export default function Task({
   const [isOpen, setIsOpen] = useState(false);
   const { editTask } = useEditTask();
   const { deleteTask } = useDeleteTask();
-  const onSave = async (e: any) => {
+  const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const formData = new FormData(e.currentTarget);
@@ -27,7 +27,7 @@ export default function Task({
       assignedTo: formData.get("assign_to"),
     };
     const id = Number(formData.get("id"));
-    const response = await editTask(id, payload);
+    await editTask(id, payload as TaskProps);
     setIsOpen(false);
   };
 
@@ -36,7 +36,7 @@ export default function Task({
   };
 
   const makeTaskDone = () => {
-    editTask(task.id, { ...task, status: "done" });
+    editTask(task.id as number, { ...task, status: "done" });
   };
 
   return (
@@ -90,7 +90,7 @@ export default function Task({
           <button
             className="border-none outline-none cursor-pointer w-12"
             onClick={() => {
-              deleteTask(task.id);
+              deleteTask(task.id as number);
             }}
           >
             <Image
