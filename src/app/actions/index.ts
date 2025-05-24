@@ -11,8 +11,13 @@ export async function credentialsSignin(formData: FormData) {
       redirect: false,
     });
     if (response?.error) {
-      return { success: false, error: response.error };
+      return {
+        success: !response?.error,
+        error: response?.error || null,
+        url: response?.url || null,
+      };
     }
+
     return response;
   } catch (error) {
     return handleApiError(error);

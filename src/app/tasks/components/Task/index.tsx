@@ -79,7 +79,7 @@ export default function Task({
           }}
         >
           <Image
-            src="/icons/edit.svg"
+            src="/icons/Edit.svg"
             width={34}
             height={34}
             alt="edit"
@@ -94,10 +94,10 @@ export default function Task({
             }}
           >
             <Image
-              src="/icons/delete.svg"
+              src="/icons/Delete.svg"
               width={34}
               height={34}
-              alt="edit"
+              alt="delete"
               className="cursor-pointer"
             />
           </button>

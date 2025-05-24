@@ -15,7 +15,6 @@ export default function Tasks() {
   const { getTasks, tasks } = useGetTasks();
   const { addTask } = useCreateTask();
   const session = useSession();
-  const isAuthenticated = session.status === "authenticated";
   const isAdmin = useMemo(() => {
     return session.data?.user?.role === "admin";
   }, [session]);
@@ -34,18 +33,18 @@ export default function Tasks() {
       assignedTo: formData.get("assign_to") as string,
     });
     setIsOpen(false);
+    await getTasks();
   };
 
   const onCancel = () => {
     setIsOpen(false);
   };
 
-  if (session.status === "loading") return null;
-  if (!isAuthenticated) redirect("/login");
+  if (!session) redirect("/login");
   return (
-    <div className="pt-[50px] px-[100px] flex flex-col gap-[50px]">
+    <div className="pt-[50px] px-[100px] flex flex-col gap-[50px] ">
       <div className="w-full flex justify-between">
-        <Image src="/logo.svg" width={82} height={28} alt="taski" />
+        <Image src="/Logo.svg" width={82} height={28} alt="taski" />
         <div
           className="flex gap-2.5 items-center cursor-pointer"
           onClick={doLogout}
@@ -62,7 +61,7 @@ export default function Tasks() {
           <span className="text-primary">{session.data?.user?.firstName}</span>
         </h2>
         <p className="text-[18px] text-slate-blue">
-          Your team got {tasks.length} tasks to do.
+          {isAdmin ? "Your team got" : "You’ve got"} {tasks.length} tasks to do.
         </p>
       </div>
       {(isAdmin

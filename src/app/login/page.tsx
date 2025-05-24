@@ -4,11 +4,12 @@ import Input from "@/components/design-system/atoms/Input";
 import Image from "next/image";
 import { credentialsSignin } from "@/app/actions";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useSession } from "next-auth/react";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const router = useRouter();
-  const [error, setError] = useState("");
+  const { update } = useSession();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,13 +19,14 @@ export default function Login() {
       const response = await credentialsSignin(formData);
 
       if (!!response.error) {
-        setError(response.error);
+        throw Error(response.error);
       } else {
+        await update();
         router.push("/tasks");
       }
     } catch (error) {
       console.error(error);
-      setError("email or password not correct.");
+      toast.error("email or password not correct.", { position: "top-right" });
     }
   };
   return (
@@ -32,14 +34,13 @@ export default function Login() {
       <div className="rounded-[25px] p-[25px] flex flex-col gap-20 w-[380px] border border-primary">
         <div className="flex justify-center">
           <Image
-            src="/logo.svg"
+            src="/Logo.svg"
             width={82}
             height={28}
             alt="taski"
             className="items-center"
           />
         </div>
-        {error && <p>{error}</p>}
         <div className="flex flex-col gap-[30px]">
           <h2 className="text-[28px] font-semibold text-center">Login</h2>
           <form onSubmit={onSubmit}>
@@ -58,8 +59,11 @@ export default function Login() {
               />
             </div>
 
-            {/* <button type="submit">Login</button> */}
-            <Button label="Login" type="submit" className="mt-5" />
+            <Button
+              label="Login"
+              type="submit"
+              className="mt-5 text-center justify-center cursor-pointer"
+            />
           </form>
         </div>
       </div>

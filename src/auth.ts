@@ -45,7 +45,13 @@ export const {
     signIn: "/login",
   },
   callbacks: {
-    jwt({ token, user }) {
+    jwt({ token, user, trigger, session }) {
+      if (trigger === "update") {
+        return {
+          ...token,
+          ...session.user,
+        };
+      }
       if (user) {
         token.username = user.username;
         token.accessToken = user.token;
