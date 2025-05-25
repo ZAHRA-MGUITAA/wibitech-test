@@ -5,6 +5,7 @@ import TaskModal from "@/app/tasks/components/TaskModal";
 import { useState } from "react";
 import useEditTask from "@/app/tasks/hooks/useEditTask";
 import useDeleteTask from "@/app/tasks/hooks/useDeleteTask";
+import { useTaskStore } from "@/store/task-store";
 
 export default function Task({
   task,
@@ -16,6 +17,8 @@ export default function Task({
   const [isOpen, setIsOpen] = useState(false);
   const { editTask } = useEditTask();
   const { deleteTask } = useDeleteTask();
+  const { fetchTasks } = useTaskStore();
+
   const onSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -29,6 +32,7 @@ export default function Task({
     const id = Number(formData.get("id"));
     await editTask(id, payload as TaskProps);
     setIsOpen(false);
+    fetchTasks();
   };
 
   const onCancel = () => {
@@ -89,8 +93,9 @@ export default function Task({
         {isAdmin && (
           <button
             className="border-none outline-none cursor-pointer w-12"
-            onClick={() => {
-              deleteTask(task.id as number);
+            onClick={async () => {
+              await deleteTask(task.id as number);
+              fetchTasks();
             }}
           >
             <Image

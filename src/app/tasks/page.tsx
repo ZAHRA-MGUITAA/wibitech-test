@@ -5,24 +5,23 @@ import { useEffect, useMemo, useState } from "react";
 import { useSession } from "next-auth/react";
 import { doLogout } from "@/app/actions";
 import TaskModal from "./components/TaskModal";
-import useGetTasks from "./hooks/useGetTasks";
 import useCreateTask from "./hooks/useCreateTask";
 import { Task as TaskProps } from "./types";
 import { redirect } from "next/navigation";
+import { useTaskStore } from "@/store/task-store";
 
 export default function Tasks() {
   const [isOpen, setIsOpen] = useState(false);
-  const { getTasks, tasks } = useGetTasks();
   const { addTask } = useCreateTask();
   const session = useSession();
   const isAdmin = useMemo(() => {
     return session.data?.user?.role === "admin";
   }, [session]);
+  const { tasks, fetchTasks } = useTaskStore();
 
   useEffect(() => {
-    getTasks();
-  }, []);
-
+    fetchTasks();
+  }, [fetchTasks]);
   const addNewTask = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -33,7 +32,7 @@ export default function Tasks() {
       assignedTo: formData.get("assign_to") as string,
     });
     setIsOpen(false);
-    await getTasks();
+    await fetchTasks();
   };
 
   const onCancel = () => {

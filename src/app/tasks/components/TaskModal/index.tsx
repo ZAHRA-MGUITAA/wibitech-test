@@ -112,7 +112,7 @@ export default function TaskModal({
               <div className="flex gap-[15px] justify-end">
                 <Button
                   label="Cancel"
-                  className="!w-fit cursor-pointer"
+                  className="!w-fit cursor-pointer !bg-gray !text-[#FF5E5E]"
                   onClick={onCancel}
                   type="button"
                 />
